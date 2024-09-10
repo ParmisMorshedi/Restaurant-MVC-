@@ -1,0 +1,20 @@
+﻿@model List<Reservation>
+
+@foreach(var reservation in Model)
+{
+    <div class="card" style="width:18rem">
+        <div class="card-body">
+            <h5 class="card_Title">@reservation.Time</h5>
+             <h2 class="TableId">@reservation.TableId</h2> 
+             <h2 class="CustomerId">@reservation.CustomerId</h2> 
+            <h5 class="NumberOfGuest">@reservation.NumberOfGuests</h5>
+            <p class="Date">@reservation.Date</p>
+            <form method="post" asp-action="Delete" style="display:inline;">
+                <input type="hidden" name="id" value="@reservation.Id" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+        
+    </div>
+}
+<a asp-action="Create" asp-controller="Reservation" class="btn btn-primary">Create</a>
