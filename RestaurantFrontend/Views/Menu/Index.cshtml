@@ -1,17 +1,58 @@
-﻿@model List<Menu>
+﻿ @model List<Menu>
+
+<form asp-action="Index" method="get">
+    <input name="searchTitle" type="text" />
+    <button type ="submit">Search</button>
+
+</form>
 
 
- @foreach(var menu in Model)
+@using System.Security.Claims
+
+@{
+    var uniqeName = User.FindFirst(ClaimTypes.Name)?.Value;
+    var email = User.FindFirst(ClaimTypes.Email)?.Value;
+    var role = User.FindFirst(ClaimTypes.Role)?.Value;
+}
+<p>Email: @email</p>
+<p>Welcome, @uniqeName. you are loggad in as: @role</p>
+
+
+
+
+<form asp-controller="Auth" asp-action="Logout" method="post">
+    <button type="submit" class="btn btn-danger">Logout</button>
+
+</form>
+
+<br />
+
+
+@* SEO Optimering *@
+
+@* <h1>Our Menu</h1>
+<p>Explore our wide selection of Italian dishes, prepared with the finest ingredients. We take pride in offering delicious, high-quality meals for every occasion.</p> *@
+
+
+
+@foreach (var menu in Model)
 {
     <div class="card" style="width:18rem">
         <div class="card-body">
-            <h5 class="card-title">@menu.DishName</h5>
-            <p class="card-text">@menu.Price</p>  
-            <h7>@menu.Description</h7>
-            <h7>Is Available : @menu.IsAvailable</h7>
+            <h5 class="card_Title">@menu.DishName</h5>
+            <h2 class="card-Text">@menu.Price</h2>
+            <p class="card-text">Menu Description :@menu.Description</p>
+            <a asp-controller="Menu" asp-action="Edit" asp-route-id=@menu.Id class="btn btn-warning">Edit</a>
+        
+            <form method="post" asp-action="Delete" style="display:inline;">
+                <input type="hidden" name="id" value="@menu.Id" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
         </div>
+
     </div>
-   
-    
 }
-  
+<a asp-action="Create" asp-controller="Menu" class="btn btn-primary">Create</a>
+
+
+

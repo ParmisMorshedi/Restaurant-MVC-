@@ -1,9 +1,11 @@
-﻿
+
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RestaurantFrontend.Models;
 using System.Text;
 using System.Net.Http;
+using Microsoft.AspNetCore.Authorization;
+
 
 
 namespace RestaurantFrontend.Controllers
@@ -23,7 +25,7 @@ namespace RestaurantFrontend.Controllers
             {
 
                 ViewData["Title"] = "Book table";
-                var response = await _client.GetAsync($"{baseUri}api/Reservation");
+                var response = await _client.GetAsync($"{_baseUri}api/Reservation");
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
                 var reservationList = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
@@ -44,7 +46,6 @@ namespace RestaurantFrontend.Controllers
         [HttpPost]
         public async Task<IActionResult> AddReservation(ReservationDTO reservationDTO)
         {
-
             if (!ModelState.IsValid)
             {
                 return View(reservationDTO);
@@ -116,4 +117,4 @@ namespace RestaurantFrontend.Controllers
             }
         }
     }
-}
+
