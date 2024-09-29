@@ -27,7 +27,7 @@ namespace RestaurantFrontend.Controllers
                 var response = await _client.GetAsync($"{_baseUri}api/Reservation");
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
-                var reservationList = JsonConvert.DeserializeObject<List<Reservation>>(json);
+                var reservationList = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
                 return View(reservationList);
             }
             catch (HttpRequestException ex)
@@ -43,7 +43,7 @@ namespace RestaurantFrontend.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(Reservation reservation) 
+        public async Task<IActionResult> AddReservation(ReservationDTO reservationDTO) 
         {
             if (!ModelState.IsValid)
             {
