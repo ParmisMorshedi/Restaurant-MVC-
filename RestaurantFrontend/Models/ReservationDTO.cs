@@ -1,14 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantFrontend.Models
 {
-    public class Reservation
+    public class ReservationDTO
     {
-        public int Id { get; set; }
+        public int ReservationId { get; set; }
+   
         public int TableId { get; set; }
+   
         public int CustomerId { get; set; }
-        public TimeOnly Time { get; set; }
+
+        public TimeSpan Time { get; set; }
         public DateTime Date { get; set; }
 
 

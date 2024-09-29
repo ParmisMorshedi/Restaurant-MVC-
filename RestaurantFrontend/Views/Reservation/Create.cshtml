@@ -1,14 +1,29 @@
-﻿@model Reservation
+﻿@model ReservationDTO
 
 
 <h1>Create New Reservation</h1>
 
-<form asp-action="Create" method="post">
+<form asp-action="AddReservation" method="post">
+
+    <div class="form-group">
+        <label asp-for="TableId">ID</label>
+        <input asp-for=TableId class="form-control" type="number" />
+        <span asp-validation-for="TableId" class="text-danger"></span>
+    </div>
+
+   
+    <div class="form-group">
+        <label asp-for="CustomerId">Customer Id</label>
+        <input asp-for="CustomerId" class="form-control" type="number" />
+        <span asp-validation-for="CustomerId" class="text-danger"></span>
+    </div>
+
     <div class="form-group">
         <label asp-for="Time">Time</label>
-        <input asp-for=Time class="form-control" type="time" />
+        <input asp-for="Time" class="form-control" type="time" />
         <span asp-validation-for="Time" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label asp-for="Date">Date</label>
         <input asp-for=Date class="form-control" type="date" />
@@ -21,4 +36,4 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Create</button>
-</form>
+</form>>
