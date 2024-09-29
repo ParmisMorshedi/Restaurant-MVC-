@@ -25,7 +25,7 @@ namespace RestaurantFrontend.Controllers
             {
 
                 ViewData["Title"] = "Book table";
-                var response = await _client.GetAsync($"{_baseUri}api/Reservation");
+                var response = await _client.GetAsync($"{baseUri}api/Reservation");
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
                 var reservationList = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
@@ -117,4 +117,5 @@ namespace RestaurantFrontend.Controllers
             }
         }
     }
+}
 
