@@ -1,4 +1,6 @@
-﻿ @model List<Menu>
+﻿@using RestaurantFrontend.Models.DTOs
+
+ @model List<MenuDTO>
 
 <form asp-action="Index" method="get">
     <input name="searchTitle" type="text" />
@@ -16,8 +18,6 @@
 }
 <p>Email: @email</p>
 <p>Welcome, @uniqeName. you are loggad in as: @role</p>
-
-
 
 
 <form asp-controller="Auth" asp-action="Logout" method="post">
@@ -38,16 +38,24 @@
 @foreach (var menu in Model)
 {
     <div class="card" style="width:18rem">
+
         <div class="card-body">
+
             <h5 class="card_Title">@menu.DishName</h5>
+
             <h2 class="card-Text">@menu.Price</h2>
+
             <p class="card-text">Menu Description :@menu.Description</p>
-            <a asp-controller="Menu" asp-action="Edit" asp-route-id=@menu.Id class="btn btn-warning">Edit</a>
-        
-            <form method="post" asp-action="Delete" style="display:inline;">
-                <input type="hidden" name="id" value="@menu.Id" />
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
+
+            <td>
+                <form method="post" asp-action="DeleteMenu" style="display:inline;">
+                    <input type="hidden" name="id" value="@menu.MenuId" />
+                    
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+                <a asp-action="Edit" asp-route-id="@menu.MenuId" class="btn btn-warning">Edit</a>
+            </td>
+
         </div>
 
     </div>

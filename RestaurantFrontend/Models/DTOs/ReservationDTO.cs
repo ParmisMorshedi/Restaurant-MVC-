@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RestaurantFrontend.Models
+namespace RestaurantFrontend.Models.DTOs
 {
     public class ReservationDTO
     {
         public int ReservationId { get; set; }
-   
+
         public int TableId { get; set; }
-   
+
         public int CustomerId { get; set; }
 
         public TimeSpan Time { get; set; }
