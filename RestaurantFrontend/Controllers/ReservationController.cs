@@ -6,6 +6,7 @@ using System.Text;
 using System.Net.Http;
 using Microsoft.AspNetCore.Authorization;
 using RestaurantFrontend.Models.DTOs;
+using System.Net.Http.Headers;
 
 
 
@@ -26,8 +27,16 @@ namespace RestaurantFrontend.Controllers
             {
 
                 ViewData["Title"] = "Book table";
+                var token = HttpContext.Request.Cookies["jwtToken"];
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
                 var response = await _client.GetAsync($"{baseUri}api/Reservation");
-                response.EnsureSuccessStatusCode();
+                if (!response.IsSuccessStatusCode)
+                {
+
+                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    return View(new List<ReservationDTO>());
+                }
                 var json = await response.Content.ReadAsStringAsync();
                 var reservationList = JsonConvert.DeserializeObject<List<ReservationDTO>>(json);
                 return View(reservationList);
@@ -56,10 +65,16 @@ namespace RestaurantFrontend.Controllers
             var response = await _client.PostAsync($"{baseUri}api/Reservation/AddReservation", content);
             return RedirectToAction("Index");
         }
+        [Authorize]
         // DELETE: Delete Reservation
         [HttpPost]
         public async Task<IActionResult> DeleteReservation(int id)
         {
+            var token = HttpContext.Session.GetString("JwtToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
             try
             {
                 var response = await _client.DeleteAsync($"{baseUri}api/Reservation/{id}");
@@ -76,46 +91,55 @@ namespace RestaurantFrontend.Controllers
                 return RedirectToAction("Index");
             }
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var response = await _client.GetAsync($"{baseUri}api/Reservation/{id}");
-            response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            var reservation = JsonConvert.DeserializeObject<ReservationDTO>(json);
-            return View(reservation);
-        }
 
+            var response = await _client.GetAsync($"{baseUri}api/Reservation/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var reservation = JsonConvert.DeserializeObject<ReservationDTO>(json);
+                return View(reservation);
+            }
+            ModelState.AddModelError(string.Empty, "Failed to load menu for updating.");
+            return RedirectToAction("Index");
+
+
+        }
+        [Authorize]
         //POST: Update Reservation
         [HttpPost]
         public async Task<IActionResult> UpdateReservation(ReservationDTO reservationDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                return View("Edit", reservationDTO);
-            }
+            var token = HttpContext.Session.GetString("JwtToken");
 
-            try
+            if (!string.IsNullOrEmpty(token))
             {
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+           
+
+          
                 var json = JsonConvert.SerializeObject(reservationDTO);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
+
                 var response = await _client.PutAsync($"{baseUri}api/Reservation/{reservationDTO.ReservationId}", content);
 
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index");
                 }
-                else
-                {
-                    ViewData["Error"] = "Failed to update reservation.";
-                    return View("Edit", reservationDTO);
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                ViewData["Error"] = "Error updating reservation: " + ex.Message;
-                return View("Edit", reservationDTO);
-            }
+
+            ModelState.AddModelError(string.Empty, "Failed to update menu.");
+            return View(new List<ReservationDTO>());
+
+
+
+            
+            
         }
     }
 }

@@ -1,6 +1,32 @@
 ﻿@using RestaurantFrontend.Models.DTOs
 @model List<ReservationDTO>
 
+<form asp-action="Index" method="get">
+    <input name="searchTitle" type="text" />
+    <button type="submit">Search</button>
+
+</form>
+
+
+@using System.Security.Claims
+
+@{
+    var uniqeName = User.FindFirst(ClaimTypes.Name)?.Value;
+    var email = User.FindFirst(ClaimTypes.Email)?.Value;
+    var role = User.FindFirst(ClaimTypes.Role)?.Value;
+}
+<p>Email: @email</p>
+<p>Welcome, @uniqeName. you are loggad in as: @role</p>
+
+
+<form asp-controller="Auth" asp-action="Logout" method="post">
+    <button type="submit" class="btn btn-danger">Logout</button>
+
+</form>
+
+<br />
+
+
 @foreach(var reservation in Model)
 {
     <div class="card" style="width:18rem">
