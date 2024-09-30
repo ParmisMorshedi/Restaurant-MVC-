@@ -5,6 +5,7 @@ using RestaurantFrontend.Models;
 using System.Text;
 using System.Net.Http;
 using Microsoft.AspNetCore.Authorization;
+using RestaurantFrontend.Models.DTOs;
 
 
 
@@ -35,7 +36,7 @@ namespace RestaurantFrontend.Controllers
             {
 
                 ViewData["Error"] = "Error fetching reservations: " + ex.Message;
-                return View(new List<Reservation>());
+                return View(new List<ReservationDTO>());
             }
         }
         public IActionResult Create()

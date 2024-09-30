@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RestaurantFrontend.Models;
+using RestaurantFrontend.Models.DTOs;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -32,11 +33,11 @@ namespace RestaurantFrontend.Controllers
             {
 
                 ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-                return View(new List<Menu>());
+                return View(new List<MenuDTO>());
             }
             var json = await response.Content.ReadAsStringAsync();
 
-            var menuList = JsonConvert.DeserializeObject<List<Menu>>(json);
+            var menuList = JsonConvert.DeserializeObject<List<MenuDTO>>(json);
             if (!string.IsNullOrEmpty(searchTitle))
             {
                 menuList = menuList.Where(m =>m.DishName.Contains(searchTitle)).ToList();
@@ -52,8 +53,13 @@ namespace RestaurantFrontend.Controllers
             return View(menuList);
         }
        
+        public IActionResult Create()
+        {
+            return View();
+        }
+
         [HttpPost]
-        public async Task<IActionResult> Create(Menu menu)
+        public async Task<IActionResult> AddMenu(MenuDTO menuDTO)
         {
             var token = HttpContext.Session.GetString("JwtToken");
 
@@ -62,7 +68,7 @@ namespace RestaurantFrontend.Controllers
                 _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            var jsonContent = JsonConvert.SerializeObject(menu);
+            var jsonContent = JsonConvert.SerializeObject(menuDTO);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
             var response = await _client.PostAsync($"{_baseUri}api/Menu", content);
@@ -73,12 +79,30 @@ namespace RestaurantFrontend.Controllers
             }
 
             ModelState.AddModelError(string.Empty, "Failed to create menu.");
-            return View(menu);
+            return View(new List<MenuDTO>());
         }
-       
-        [HttpPost]
-        public async Task<IActionResult> Update(int id, Menu menu)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
         {
+           
+            var response = await _client.GetAsync($"{_baseUri}api/Menu/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var menu = JsonConvert.DeserializeObject<MenuDTO>(json);
+                return View(menu);
+            }
+
+            ModelState.AddModelError(string.Empty, "Failed to load menu for updating.");
+            return RedirectToAction("Index");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateMenu(MenuDTO menuDTO)
+        {
+           
             var token = HttpContext.Session.GetString("JwtToken");
 
             if (!string.IsNullOrEmpty(token))
@@ -86,10 +110,10 @@ namespace RestaurantFrontend.Controllers
                 _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            var jsonContent = JsonConvert.SerializeObject(menu);
+            var jsonContent = JsonConvert.SerializeObject(menuDTO);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            var response = await _client.PutAsync($"{_baseUri}api/Menu/{id}", content);
+            var response = await _client.PutAsync($"{_baseUri}api/Menu/{menuDTO.MenuId}", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -97,11 +121,11 @@ namespace RestaurantFrontend.Controllers
             }
 
             ModelState.AddModelError(string.Empty, "Failed to update menu.");
-            return View(menu);
+            return View(new List<MenuDTO>());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteMenu(int id)
         {
             var token = HttpContext.Session.GetString("JwtToken");
 

@@ -3,6 +3,29 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to our Restaurant</h1>
 </div>
+
+@model List<RestaurantFrontend.Models.DTOs.MenuDTO>
+
+<h2>Popular Dishes</h2>
+
+@if (Model != null && Model.Count > 0)
+{
+    
+        @foreach (var dish in Model)
+        {
+             <div class="card" style="width:18rem">
+                <div class="card-body">
+                    <h5 class="card_Title">@dish.DishName</h5>
+                    <h2 class="card-Text">@dish.Price</h2>
+                    <p class="card-text">Menu Description :@dish.Description</p>
+                </div>
+            </div>
+        }
+   
+}
+else
+{
+    <p>No popular dishes available at the moment.</p>
+}

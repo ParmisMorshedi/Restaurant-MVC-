@@ -17,9 +17,7 @@ namespace RestaurantFrontend.Controllers
     public class AuthController : Controller
     {
         private readonly HttpClient _httpClient;
-        //private readonly ApiService _apiService;
 
-        //private string _baseUri = "https://localhost:7071/";
         public AuthController(HttpClient client)
         {
             _httpClient = client;
@@ -42,19 +40,6 @@ namespace RestaurantFrontend.Controllers
                 return View(loginUser);
             }
 
-            //try
-            //{
-                //var token = await _apiService.LoginAsync(loginUser);
-                //if (!string.IsNullOrEmpty(token))
-                //{
-                //    HttpContext.Session.SetString("JWTToken", token); // Spara token
-                //    return RedirectToAction("Index", "Home");
-                //}
-            //}
-            //catch (Exception ex)
-            //{
-            //    ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
-            //}
             var jsonResponse = await response.Content.ReadAsStringAsync();
             var token = JsonConvert.DeserializeObject<TokenResponse>(jsonResponse);
 
@@ -96,11 +81,4 @@ namespace RestaurantFrontend.Controllers
 }
 
 
-
-
-//[HttpGet]
-//public IActionResult Register()
-//{
-//    return View();
-//}
 

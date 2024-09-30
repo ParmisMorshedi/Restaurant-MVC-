@@ -1,4 +1,5 @@
-﻿@model ReservationDTO
+﻿@using RestaurantFrontend.Models.DTOs
+@model ReservationDTO
 
 <h2>Edit Reservation</h2>
 
@@ -21,7 +22,7 @@
         <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
     </div>
 
-    <!-- Hidden field for ReservationId -->
+  
     <input type="hidden" asp-for="ReservationId" />
 
     <button type="submit" class="btn btn-primary">Save</button>
