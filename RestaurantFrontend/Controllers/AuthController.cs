@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestaurantFrontend.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
@@ -72,6 +73,8 @@ namespace RestaurantFrontend.Controllers
         public async Task<IActionResult> Logout() 
         {
             
+
+
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Response.Cookies.Delete("jwtToken");
 
