@@ -1,66 +1,101 @@
 ﻿@using RestaurantFrontend.Models.DTOs
+@model List<MenuDTO>
 
- @model List<MenuDTO>
-
-<form asp-action="Index" method="get">
-    <input name="searchTitle" type="text" />
-    <button type ="submit">Search</button>
-
-</form>
-
-
-@using System.Security.Claims
-
-@{
-    var uniqeName = User.FindFirst(ClaimTypes.Name)?.Value;
-    var email = User.FindFirst(ClaimTypes.Email)?.Value;
-    var role = User.FindFirst(ClaimTypes.Role)?.Value;
-}
-<p>Email: @email</p>
-<p>Welcome, @uniqeName. you are loggad in as: @role</p>
-
-
-<form asp-controller="Auth" asp-action="Logout" method="post">
-    <button type="submit" class="btn btn-danger">Logout</button>
-
-</form>
-
-<br />
-
-
-@* SEO Optimering *@
-
-@* <h1>Our Menu</h1>
-<p>Explore our wide selection of Italian dishes, prepared with the finest ingredients. We take pride in offering delicious, high-quality meals for every occasion.</p> *@
-
-
-
-@foreach (var menu in Model)
-{
-    <div class="card" style="width:18rem">
-
-        <div class="card-body">
-
-            <h5 class="card_Title">@menu.DishName</h5>
-
-            <h2 class="card-Text">@menu.Price</h2>
-
-            <p class="card-text">Menu Description :@menu.Description</p>
-
-            <td>
-                <form method="post" asp-action="DeleteMenu" style="display:inline;">
-                    <input type="hidden" name="id" value="@menu.MenuId" />
-                    
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-                <a asp-action="Edit" asp-route-id="@menu.MenuId" class="btn btn-warning">Edit</a>
-            </td>
-
+<div class="container mt-5">
+   @*  Logout Section *@
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h4 class="card-title">You are logged in</h4>
+                    <p>If you wish to logout, press the button below.</p>
+                    <form asp-controller="Auth" asp-action="Logout" method="post">
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                </div>
+            </div>
         </div>
-
     </div>
-}
-<a asp-action="Create" asp-controller="Menu" class="btn btn-primary">Create</a>
 
+    @* Search Filters Section *@
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Search the Menu</h4>
+                    <form asp-action="Index" method="get" class="row g-3">
+                        @* Filter to search by dish name *@
+                        <div class="col-md-6">
+                            <label for="searchTitle" class="form-label">Search by Dish Name</label>
+                            <input name="searchTitle" type="text" class="form-control" value="@ViewData["searchTitle"]" placeholder="Enter dish name" />
+                        </div>
 
+                      @*   Filter to search by price *@
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Max Price</label>
+                            <input name="price" type="number" class="form-control" value="@ViewData["price"]" placeholder="Enter max price" />
+                        </div>
 
+                        <div class="col-md-12 text-end mt-3">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Menu Section *@
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            <div class="col-md-12 mb-4">
+                <h1>Our Menu</h1>
+                <p>Explore our wide selection of Italian dishes, prepared with the finest ingredients. We take pride in offering delicious, high-quality meals for every occasion.</p>
+            </div>
+
+            @foreach (var menu in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@menu.DishName</h5>
+                            <p class="card-text">@menu.Description</p>
+                            <h4 class="card-text text-success">@menu.Price.ToString("C")</h4>
+
+                            <div class="d-flex justify-content-between mt-3">
+                                <form method="post" asp-action="DeleteMenu" style="display:inline;">
+                                    <input type="hidden" name="id" value="@menu.MenuId" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                                <a asp-action="Edit" asp-route-id="@menu.MenuId" class="btn btn-warning btn-sm">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-md-12">
+                <div class="alert alert-warning text-center" role="alert">
+                    No results found matching your search criteria. Please try different filters.
+                </div>
+            </div>
+        }
+    </div>
+
+   @*  Create Button Section *@
+    <div class="row mt-4">
+        <div class="col-md-12 text-end">
+            <a asp-action="Create" asp-controller="Menu" class="btn btn-primary">Create New Dish</a>
+        </div>
+    </div>
+</div>
+
+ @* SEO Optimized Meta Tags *@
+<head>
+    <title>Our Menu - Explore Italian Dishes | RestaurantFrontend</title>
+    <meta name="description" content="Explore our wide selection of Italian dishes, including pizzas, pastas, and more. Prepared with the finest ingredients, our menu offers something for every occasion." />
+    <meta name="keywords" content="Italian menu, pizza, pasta, grilled dishes, Italian restaurant, food, dining" />
+</head>

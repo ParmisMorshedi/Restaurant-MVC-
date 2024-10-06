@@ -17,6 +17,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Auth/Login";
+        options.LogoutPath = "/Auth/Logout";
     });
 
 //Add Service to the Container.

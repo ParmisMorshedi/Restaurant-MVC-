@@ -20,7 +20,7 @@ namespace RestaurantFrontend.Controllers
             _client = client;
         }
         [Authorize]
-        public async Task<IActionResult> Index(string searchTitle, int? searchYear)
+        public async Task<IActionResult> Index(string searchTitle, int? price)
         {
             ViewData["Title"] = "Available Menu";
 
@@ -42,13 +42,14 @@ namespace RestaurantFrontend.Controllers
             {
                 menuList = menuList.Where(m =>m.DishName.Contains(searchTitle)).ToList();
             }
-            //int numericSearch = 0;
-            //    int.TryParse(searchTitle, out numericSearch);
-
-            if (searchYear.HasValue)
+            // Filter by price
+            if (price.HasValue)
             {
-                menuList = menuList.Where(m => m.Price == searchYear.Value).ToList(); 
+                menuList = menuList.Where(m => m.Price <= price.Value).ToList();
             }
+
+       
+
 
             return View(menuList);
         }
